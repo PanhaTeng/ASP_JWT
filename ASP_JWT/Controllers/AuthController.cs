@@ -1,6 +1,7 @@
 ﻿using ASP_JWT.Data;
 using ASP_JWT.Models;
 using ASP_JWT.SecurityConfig;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +15,7 @@ namespace ASP_JWT.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [AllowAnonymous]
     public class AuthController : ControllerBase
     {
         private readonly UserManager<IdentityUser> _userManager;

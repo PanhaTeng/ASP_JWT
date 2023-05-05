@@ -1,12 +1,14 @@
+using Azure.Storage.Blobs;
 using ASP_JWT.Data;
 using ASP_JWT.SecurityConfig;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Azure.Storage.Blobs.Models;
+using Microsoft.Azure.Storage.Blob;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,32 +24,40 @@ var builder = WebApplication.CreateBuilder(args);
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
     builder.Services.AddAutoMapper(typeof(MapperProfile));
+    var blobStorageConnectionString = builder.Configuration.GetSection("AzureBlobStorage:ConnectionString").Value;
+    var coverImageContainerName = builder.Configuration.GetSection("AzureBlobStorage:CoverImageContainerName").Value;
+    var videoContainerName = builder.Configuration.GetSection("AzureBlobStorage:VideoContainerName").Value;
+    
+    builder.Services.AddSingleton(x => new BlobServiceClient(blobStorageConnectionString));
+    builder.Services.AddScoped(x => x.GetService<BlobServiceClient>().GetBlobContainerClient(coverImageContainerName));
+    builder.Services.AddScoped(x => x.GetService<BlobServiceClient>().GetBlobContainerClient(videoContainerName));
+
     builder.Services.AddSwaggerGen(option =>
-    {
-        option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
-        option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
-            In = ParameterLocation.Header,
-            Description = "Please enter a valid token",
-            Name = "Authorization",
-            Type = SecuritySchemeType.Http,
-            BearerFormat = "JWT",
-            Scheme = "Bearer"
-        });
-        option.AddSecurityRequirement(new OpenApiSecurityRequirement
-        {
+            option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
+            option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                new OpenApiSecurityScheme
+                In = ParameterLocation.Header,
+                Description = "Please enter a valid token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "Bearer"
+            });
+            option.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
                 {
-                    Reference = new OpenApiReference
+                    new OpenApiSecurityScheme
                     {
-                        Type=ReferenceType.SecurityScheme,
-                        Id="Bearer"
-                    }
-                },
-                new string[]{}
-            }
-        });
+                        Reference = new OpenApiReference
+                        {
+                            Type=ReferenceType.SecurityScheme,
+                            Id="Bearer"
+                        }
+                    },
+                    new string[]{}
+                }
+            });
     });
 
     builder.Services

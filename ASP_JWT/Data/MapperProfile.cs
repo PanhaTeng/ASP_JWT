@@ -8,8 +8,11 @@ namespace ASP_JWT.Data
     {
         public MapperProfile()
         {
-            CreateMap<CustomerDto, Customer>();
-            CreateMap<Customer, CustomerDto>();
+            /*CreateMap<CustomerDto, Customer>();*/
+            CreateMap<Customer, CustomerDto>().ReverseMap();
+            CreateMap<Course, CourseDto>().ReverseMap();
+            CreateMap<Course,CourseCreate>().ReverseMap();
+            CreateMap<Course,CourseUpdate>().ReverseMap();
         }
     }
 }
