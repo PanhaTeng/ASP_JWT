@@ -15,7 +15,8 @@ namespace ASP_JWT.Data
         {
             base.OnModelCreating(modelBuilder);
         }
-        DbSet<Customer> Customers { get; set; }
+        DbSet<Customer> Customers { get; set; } 
+        DbSet<Course> Courses { get; set; }
 
     }
 }

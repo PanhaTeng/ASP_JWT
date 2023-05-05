@@ -21,14 +21,13 @@ namespace ASP_JWT.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly DataContext _context;
-        private readonly TokenService _tokenService;
+
         private readonly IMapper _mapper;
 
-        public CustomersController(UserManager<IdentityUser> userManager, DataContext context, TokenService tokenService, IMapper mapper)
+        public CustomersController(UserManager<IdentityUser> userManager, DataContext context, IMapper mapper)
         {
             _userManager = userManager;
             _context = context;
-            _tokenService = tokenService;
             _mapper = mapper;
         }
 

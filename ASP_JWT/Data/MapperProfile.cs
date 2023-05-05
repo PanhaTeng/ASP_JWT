@@ -6,7 +6,7 @@ namespace ASP_JWT.Data
 {
     public class MapperProfile:Profile
     {
-        MapperProfile()
+        public MapperProfile()
         {
             CreateMap<CustomerDto, Customer>();
             CreateMap<Customer, CustomerDto>();
